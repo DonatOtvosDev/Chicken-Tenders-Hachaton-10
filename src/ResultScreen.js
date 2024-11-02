@@ -29,7 +29,7 @@ function ResultScreen({ route }) {
         type: mime.getType(newImageUri),
         name: newImageUri.split("/").pop(),
       });
-      formData.append("upload_preset", "default")
+      formData.append("upload_preset", "default");
       try {
         const response = await axios.post(
           "https://api.cloudinary.com/v1_1/drmx3srcl/image/upload",
@@ -40,16 +40,48 @@ function ResultScreen({ route }) {
             },
           }
         );
-        console.log(response)
+        url = response.data.url;
+
+        lens_resposne = await axios.get("https://serpapi.com/search.json", {
+          params: {
+            engine: "google_lens",
+            url: url,
+            api_key: secrets.GoogleApiKey,
+          },
+        });
+        const regex = new RegExp("\\b[a-zA-Z]+\\b", "g");
+        vm = lens_resposne.data.visual_matches
+        appearance_count = {};
+        for (let i = 0; i < vm.length; i++) {
+          words = vm[i].title.match(regex);
+          for (let i = 0; i < words.length; i++) {
+            word = words[i].toLowerCase()
+            if (word.length < 2) {
+                continue;
+            }
+            appearance_count[word] = (appearance_count[word] || 0) + 1;
+          }
+        }
+
+        obj = Object.entries(appearance_count)
+        obj.sort((a,b) =>   b[1] - a[1])
         
+    
+
+        top_match = []
+        for (let i=0; i < 3; i ++) {
+            top_match.push(obj[i][0])
+        }
+        console.log(top_match)
+        setData(top_match)
+    
+
         // Check if the response was successful
         if (response.status > 300) {
           throw new Error("Network response was not ok");
         }
-
-        // Parse the JSON data
-        const jsonData = response.data
       } catch (err) {
+        console.log(err);
         // Catch and set any errors
         setError("Error fetching data");
       } finally {
@@ -82,7 +114,7 @@ function ResultScreen({ route }) {
 
   return (
     <SafeAreaView style={styles.background}>
-      <Text>Hello World</Text>
+      <Text>{data[0]} {data[1]} {data[2]}</Text>
     </SafeAreaView>
   );
 }
