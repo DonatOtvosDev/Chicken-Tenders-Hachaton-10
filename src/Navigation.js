@@ -4,6 +4,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { useTheme } from "./ThemeProvider";
 
 import MainScreen from "./MainScreen";
+import ResultScreen from "./ResultScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -13,7 +14,7 @@ function CustomNavigation() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-      initialRouteName="Main"
+        initialRouteName="Main"
         screenOptions={{
           headerStyle: {
             backgroundColor: theme.colors.primary,
@@ -24,10 +25,14 @@ function CustomNavigation() {
           },
         }}
       >
-        <Stack.Screen 
-        name="Main" 
-        component={MainScreen}
-        options={{ headerShown: false }}
+        <Stack.Screen
+          name="Main"
+          component={MainScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Result"
+          component={ResultScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>
