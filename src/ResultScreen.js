@@ -21,6 +21,7 @@ function ResultScreen({ route }) {
   useEffect(() => {
     // Fetch data from the API
     const fetchData = async () => {
+        
       const newImageUri = "file:///" + filePath.split("file:/").join("");
 
       const formData = new FormData();
@@ -31,6 +32,7 @@ function ResultScreen({ route }) {
       });
       formData.append("upload_preset", "default");
       try {
+        
         const response = await axios.post(
           "https://api.cloudinary.com/v1_1/drmx3srcl/image/upload",
           formData,
@@ -40,7 +42,9 @@ function ResultScreen({ route }) {
             },
           }
         );
+        console.log(response.status)
         url = response.data.url;
+        console.log(url)
 
         lens_resposne = await axios.get("https://serpapi.com/search.json", {
           params: {
@@ -50,36 +54,72 @@ function ResultScreen({ route }) {
           },
         });
         const regex = new RegExp("\\b[a-zA-Z]+\\b", "g");
-        vm = lens_resposne.data.visual_matches
+
+        vm = lens_resposne.data.visual_matches;
         appearance_count = {};
         for (let i = 0; i < vm.length; i++) {
           words = vm[i].title.match(regex);
+          if (words == null) {
+            continue;
+          }
           for (let i = 0; i < words.length; i++) {
-            word = words[i].toLowerCase()
-            if (word.length < 2) {
-                continue;
+            word = words[i].toLowerCase();
+            if (word.length < 3) {
+              continue;
             }
             appearance_count[word] = (appearance_count[word] || 0) + 1;
           }
         }
 
-        obj = Object.entries(appearance_count)
-        obj.sort((a,b) =>   b[1] - a[1])
+        obj = Object.entries(appearance_count);
+        obj.sort((a, b) => b[1] - a[1]);
+
+        top_match = [];
+        top_text = "";
+        for (let i = 0; i < 4; i++) {
+          top_match.push(obj[i][0]);
+          top_text += ` ${obj[i][0]}`;
+        }
+        console.log(top_match);
+
+        console.log(top_text)
         
+        llm_response = await axios.post(
+          secrets.LLMUrl,
+
+          
+        {
+              text: top_text,
+            },
+            {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${secrets.LLMToken}`,
+            },
+          }
+        );
+
+        console.log(`${secrets.LLMUrl}/${llm_response.data.id}/`,)
+        generated = false
+        while (!generated) {
+        llm_response = await axios.get(
+            `${secrets.LLMUrl}${llm_response.data.id}/`,
+              {
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${secrets.LLMToken}`,
+              },
+            }
+          );
+        console.log(llm_response.data.content);
+        if (llm_response.data.content.status != "running") {
+            generated = true
+        }
+    }
+    console.log(llm_response.data.content.results.VERYLASTFIELD);
+    setData(llm_response.data.content.results.VERYLASTFIELD.results[0].generated_text);
     
 
-        top_match = []
-        for (let i=0; i < 3; i ++) {
-            top_match.push(obj[i][0])
-        }
-        console.log(top_match)
-        setData(top_match)
-    
-
-        // Check if the response was successful
-        if (response.status > 300) {
-          throw new Error("Network response was not ok");
-        }
       } catch (err) {
         console.log(err);
         // Catch and set any errors
@@ -114,7 +154,9 @@ function ResultScreen({ route }) {
 
   return (
     <SafeAreaView style={styles.background}>
-      <Text>{data[0]} {data[1]} {data[2]}</Text>
+      <Text>
+        {data}
+      </Text>
     </SafeAreaView>
   );
 }
