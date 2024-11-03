@@ -12,6 +12,9 @@ import { secrets } from "../assets/secrets";
 import axios from "axios";
 import mime from "mime";
 
+banned_words =["with", "for", "youtube", "and", "walmart", "target", "costco", "amazon", "best buy", "ebay", "shopify", "zappos", "ikea", "nordstrom", "sears", "home depot", "macy's", "kohl's", "wayfair", "overstock", "asos", "etsy", "apple", "microsoft", "google", "facebook", "tesla", "netflix", "samsung", "sony", "ibm", "intel", "store", "item", "deal", "sale", "price", "offer", "check", "ship", "view", "cart", "list", "wish", "pick", "drop", "load", "read", "help", "test", "find", "more", "give", "take"];
+
+
 function ResultScreen({ route }) {
   const filePath = route.params;
   const [data, setData] = useState([]);
@@ -66,6 +69,8 @@ function ResultScreen({ route }) {
             word = words[i].toLowerCase();
             if (word.length < 3) {
               continue;
+            } else if (banned_words.includes(word)) {
+                continue;
             }
             appearance_count[word] = (appearance_count[word] || 0) + 1;
           }
