@@ -5,6 +5,7 @@ import { useTheme } from "./ThemeProvider";
 
 import MainScreen from "./MainScreen";
 import ResultScreen from "./ResultScreen";
+import BlueprintScreen from "./Blueprints/BlueprintScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -14,7 +15,7 @@ function CustomNavigation() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Main"
+        initialRouteName="Blueprint"
         screenOptions={{
           headerStyle: {
             backgroundColor: theme.colors.primary,
@@ -29,6 +30,10 @@ function CustomNavigation() {
           name="Main"
           component={MainScreen}
           options={{ headerShown: false }}
+        />
+        <Stack.Screen 
+          name="Blueprint"
+          component={BlueprintScreen}
         />
         <Stack.Screen
           name="Result"
