@@ -1,9 +1,16 @@
 import React from "react";
 
 import { useTheme } from "../ThemeProvider";
-import { FlatList, Image, StyleSheet, Text, View } from "react-native";
+import {
+  FlatList,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
-function BlueprintItem({ data }) {
+function BlueprintItem({ data, navigation }) {
   const { theme } = useTheme();
 
   const styles = StyleSheet.create({
@@ -26,6 +33,7 @@ function BlueprintItem({ data }) {
       fontSize: 16,
       textAlign: "justify",
       flex: 1,
+      margin: 3,
     },
     image: {
       width: "100",
@@ -43,6 +51,7 @@ function BlueprintItem({ data }) {
     },
     listConatiner: {
       flex: 1,
+      margin: 4,
     },
     dot: {
       width: 6,
@@ -73,10 +82,12 @@ function BlueprintItem({ data }) {
               data={data["elements"]}
               renderItem={({ item }) => {
                 return (
-                  <View style={styles.listItem}>
-                    <View style={styles.dot} />
-                    <Text style={styles.itemText}>{item}</Text>
-                  </View>
+                  <TouchableOpacity onPress={() => navigation.navigate('Shop', {"name" : item})}>
+                    <View style={styles.listItem}>
+                      <View style={styles.dot} />
+                      <Text style={styles.itemText}>{item}</Text>
+                    </View>
+                  </TouchableOpacity>
                 );
               }}
             />

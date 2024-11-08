@@ -6,6 +6,8 @@ import { useTheme } from "./ThemeProvider";
 import MainScreen from "./MainScreen";
 import ResultScreen from "./ResultScreen";
 import BlueprintScreen from "./Blueprints/BlueprintScreen";
+import ShopScreen from "./ShopScreen/ShopScreen";
+import SellScreen from "./Sell/SellScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -26,19 +28,15 @@ function CustomNavigation() {
           },
         }}
       >
+        <Stack.Screen name="Shop" component={ShopScreen} />
+        <Stack.Screen name="Sell" component={SellScreen} />
         <Stack.Screen
           name="Main"
           component={MainScreen}
           options={{ headerShown: false }}
         />
-        <Stack.Screen 
-          name="Blueprint"
-          component={BlueprintScreen}
-        />
-        <Stack.Screen
-          name="Result"
-          component={ResultScreen}
-        />
+        <Stack.Screen name="Blueprint" component={BlueprintScreen} />
+        <Stack.Screen name="Result" component={ResultScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

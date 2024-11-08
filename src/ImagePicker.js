@@ -40,7 +40,7 @@ function CustomImagePicker({ image, setImage }) {
       alignItems: "center",
       alignContent: "center",
       justifyContent: "center",
-      margin:10
+      margin: 10,
     },
 
     button: {
@@ -51,7 +51,14 @@ function CustomImagePicker({ image, setImage }) {
     image: {
       width: 300,
       height: 300,
-      margin: 5,
+      margin: 10,
+    },
+
+    row: {
+      flexDirection: "row",
+      width: "80%",
+      justifyContent: "space-evenly",
+      alignItems: "center",
     },
   });
 
@@ -62,16 +69,18 @@ function CustomImagePicker({ image, setImage }) {
         style={defaultStyles.image}
       />
 
-      <Button
-        title={"Gallery"}
-        onPress={() => pickImage()}
-        style={defaultStyles.button}
-      />
-      <Button
-        title={"Take Photo"}
-        onPress={() => takeImage()}
-        style={defaultStyles.button}
-      />
+      <View style={defaultStyles.row}>
+        <Button
+          title={"Gallery"}
+          onPress={() => pickImage()}
+          style={defaultStyles.button}
+        />
+        <Button
+          title={"Take Photo"}
+          onPress={() => takeImage()}
+          style={defaultStyles.button}
+        />
+      </View>
     </View>
   );
 }
