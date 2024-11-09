@@ -1,35 +1,43 @@
-import React, { useState } from "react";
-import { FlatList, SafeAreaView, StyleSheet, Button, View } from "react-native";
+import React, { useState, useEffect } from "react";
+import {
+  FlatList,
+  SafeAreaView,
+  StyleSheet,
+  Button,
+  View,
+  ActivityIndicator,
+} from "react-native";
+
+import axios from "axios";
+
 import BlueprintItem from "./BlueprintItem";
 
 import { useTheme } from "../ThemeProvider";
 
-function BlueprintScreen({navigation}) {
-  const blueprints = [
-    {
-      name: "Truck",
-      description: "lorem Laborum sit laborum mollit quis consequat laborum reprehenderit dolor aliquip proident deserunt velit commodo excepteur. Sit nostrud dolor et irure consequat Lorem excepteur mollit ullamco quis pariatur culpa. Ea tempor non laborum consequat adipisicing labore pariatur quis enim. Officia eu cupidatat ex velit.",
-      image_url:
-        "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
-      elements: ["tire", "wheel", "box"],
-    },
-    {
-      name: "Truck",
-      description: "this is a beautiful",
-      image_url:
-        "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
-      elements: ["tire", "wheel", "box"],
-    },
-    {
-      name: "Truck",
-      description: "this is a beautiful",
-      image_url:
-        "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
-      elements: ["tire", "wheel", "box"],
-    },
-  ];
-
+function BlueprintScreen({ navigation }) {
   const { theme } = useTheme();
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [data, setData] = useState()
+
+  const fetchData = async () => {
+    try {
+      setIsLoading(true); 
+      const response = await axios.get("https://chickentenders-10-backend.onrender.com/get_blueprints");
+      setData(response.data)
+      console.log(response.data)
+    } catch (err) {
+      console.log(err)
+    } finally {
+      setIsLoading(false); // Stop loading
+    }
+  };
+
+
+  useEffect(() => {
+    fetchData(); // Call fetchData when the component mounts
+  }, []); // Empty dependency array means this runs only once when the component is mounted
+
 
   const styles = StyleSheet.create({
     titleText: {
@@ -47,14 +55,28 @@ function BlueprintScreen({navigation}) {
 
   return (
     <SafeAreaView style={styles.backGound}>
-      <View style={styles.listConatiner}>
-        <FlatList
-       contentContainerStyle={{ alignItems: "center" }}
-          data={blueprints}
-          renderItem={({ item }) => <BlueprintItem data={item} navigation={navigation}/>}
-        />
-      </View>
-      <Button color={theme.colors.secondary} title="Sell" onPress={() => navigation.navigate('Sell')}/>
+      {isLoading ? (
+        <ActivityIndicator size="large" color="#0000ff" />
+      ) : (
+        <>
+          <View style={styles.listConatiner}>
+            <FlatList
+            refreshing={isLoading}
+            onRefresh={() => fetchData()}
+              contentContainerStyle={{ alignItems: "center" }}
+              data={data}
+              renderItem={({ item }) => (
+                <BlueprintItem data={item} navigation={navigation} />
+              )}
+            />
+          </View>
+          <Button
+            color={theme.colors.secondary}
+            title="Sell"
+            onPress={() => navigation.navigate("Sell")}
+          />
+        </>
+      )}
     </SafeAreaView>
   );
 }

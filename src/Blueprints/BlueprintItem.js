@@ -77,7 +77,7 @@ function BlueprintItem({ data, navigation }) {
       <Image style={styles.image} source={{ uri: data["image_url"] }} />
       <View style={styles.contentContainer}>
         <View style={styles.row}>
-          <Text style={styles.title}>{data["name"]}</Text>
+          <Text style={styles.title}>{data["blueprint_name"]}</Text>
           <TouchableOpacity onPress={() => setIsExpanded(!isExpanded)}>
         <Icon name={isExpanded ? "expand-less" : "expand-more"} size={24} color="#000" />
           </TouchableOpacity>

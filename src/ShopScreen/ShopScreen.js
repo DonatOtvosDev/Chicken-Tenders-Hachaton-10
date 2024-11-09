@@ -1,24 +1,35 @@
-import React, { useState } from "react";
-import { FlatList, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import React, { useState, useEffect} from "react";
+import { FlatList, SafeAreaView, StyleSheet, Text, View, ActivityIndicator } from "react-native";
 
 import ShopItem from "./ShopItem";
 
 import { useTheme } from "../ThemeProvider";
+import axios from "axios";
 
 function ShopScreen({route}) {
   const {name} = route.params;
-  const items = [
-    {
-      image_url:
-        "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
-      price: 50,
-    },
-    {
-        image_url:
-          "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
-        price: 50,
-      },
-  ];
+  const [isLoading, setIsLoading] = useState(false);
+  const [data, setData] = useState()
+
+  const fetchData = async () => {
+    try {
+      setIsLoading(true); 
+      const response = await axios.get(`https://chickentenders-10-backend.onrender.com/get_items/${name}`);
+      setData(response.data)
+      console.log(response.data)
+    } catch (err) {
+      console.log(err)
+    } finally {
+      setIsLoading(false); // Stop loading
+    }
+  };
+
+
+  useEffect(() => {
+    fetchData(); // Call fetchData when the component mounts
+  }, []); // Empty dependency array means this runs only once when the component is mounted
+
+  
 
   const { theme } = useTheme();
 
@@ -40,14 +51,15 @@ function ShopScreen({route}) {
 
   return (
     <SafeAreaView style={styles.backGound}>
-    <Text style={styles.titleText}>{name}</Text>
+    {isLoading ? (<ActivityIndicator />) : (<><Text style={styles.titleText}>{name}</Text>
       <View style={styles.listConatiner}>
         <FlatList
           contentContainerStyle={{ alignItems: "center"}}
-          data={items}
+          data={data}
           renderItem={({ item }) => <ShopItem data={item} />}
         />
-      </View>
+      </View></>)}
+   
     </SafeAreaView>
   );
 }
