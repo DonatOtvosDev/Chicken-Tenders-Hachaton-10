@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { useTheme } from "../ThemeProvider";
 import {
@@ -10,9 +10,11 @@ import {
   View,
 } from "react-native";
 
+import Icon from 'react-native-vector-icons/MaterialIcons';
+
 function BlueprintItem({ data, navigation }) {
   const { theme } = useTheme();
-
+  const [ isExpanded, setIsExpanded ] = useState(false);
   const styles = StyleSheet.create({
     card: {
       width: "90%",
@@ -74,15 +76,23 @@ function BlueprintItem({ data, navigation }) {
     <View style={styles.card}>
       <Image style={styles.image} source={{ uri: data["image_url"] }} />
       <View style={styles.contentContainer}>
-        <Text style={styles.title}>{data["name"]}</Text>
         <View style={styles.row}>
+          <Text style={styles.title}>{data["name"]}</Text>
+          <TouchableOpacity onPress={() => setIsExpanded(!isExpanded)}>
+        <Icon name={isExpanded ? "expand-less" : "expand-more"} size={24} color="#000" />
+          </TouchableOpacity>
+        </View>
+        {!isExpanded ? null : (
+          <View style={styles.row}>
           <Text style={styles.body}>{data["description"]}</Text>
           <View style={styles.listConatiner}>
             <FlatList
               data={data["elements"]}
               renderItem={({ item }) => {
                 return (
-                  <TouchableOpacity onPress={() => navigation.navigate('Shop', {"name" : item})}>
+                  <TouchableOpacity
+                    onPress={() => navigation.navigate("Shop", { name: item })}
+                  >
                     <View style={styles.listItem}>
                       <View style={styles.dot} />
                       <Text style={styles.itemText}>{item}</Text>
@@ -93,6 +103,8 @@ function BlueprintItem({ data, navigation }) {
             />
           </View>
         </View>
+        )}
+        
       </View>
     </View>
   );

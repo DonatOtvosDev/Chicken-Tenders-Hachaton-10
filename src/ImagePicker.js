@@ -64,11 +64,12 @@ function CustomImagePicker({ image, setImage }) {
 
   return (
     <View style={defaultStyles.container}>
+    {image != null ?
       <Image
-        source={image == null ? require("../assets/icon.png") : { uri: image }}
+        source= {{ uri: image }}
         style={defaultStyles.image}
-      />
-
+      /> : null
+    }
       <View style={defaultStyles.row}>
         <Button
           title={"Gallery"}
