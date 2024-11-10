@@ -59,11 +59,12 @@ function BlueprintItem({ data, navigation }) {
       width: 6,
       height: 6,
       borderRadius: 3, // Circular dot
-      backgroundColor: "#000", // Dot color
+      backgroundColor: "#2596be", // Dot color
       marginRight: 10,
     },
     itemText: {
       fontSize: 16,
+      color: "#2596be"
     },
     listItem: {
       flexDirection: "row",
@@ -74,7 +75,8 @@ function BlueprintItem({ data, navigation }) {
 
   return (
     <View style={styles.card}>
-      <Image style={styles.image} source={{ uri: data["image_url"] }} />
+    <TouchableOpacity onPress={() => setIsExpanded(!isExpanded)}>
+      <Image style={styles.image} source={{ uri: data["image_url"] }} /></TouchableOpacity>
       <View style={styles.contentContainer}>
         <View style={styles.row}>
           <Text style={styles.title}>{data["blueprint_name"]}</Text>
