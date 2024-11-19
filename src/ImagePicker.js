@@ -40,7 +40,7 @@ function CustomImagePicker({ image, setImage }) {
       alignItems: "center",
       alignContent: "center",
       justifyContent: "center",
-      margin:10
+      margin: 10,
     },
 
     button: {
@@ -51,27 +51,37 @@ function CustomImagePicker({ image, setImage }) {
     image: {
       width: 300,
       height: 300,
-      margin: 5,
+      margin: 10,
+    },
+
+    row: {
+      flexDirection: "row",
+      width: "80%",
+      justifyContent: "space-evenly",
+      alignItems: "center",
     },
   });
 
   return (
     <View style={defaultStyles.container}>
+    {image != null ?
       <Image
-        source={image == null ? require("../assets/icon.png") : { uri: image }}
+        source= {{ uri: image }}
         style={defaultStyles.image}
-      />
-
-      <Button
-        title={"Gallery"}
-        onPress={() => pickImage()}
-        style={defaultStyles.button}
-      />
-      <Button
-        title={"Take Photo"}
-        onPress={() => takeImage()}
-        style={defaultStyles.button}
-      />
+      /> : null
+    }
+      <View style={defaultStyles.row}>
+        <Button
+          title={"Gallery"}
+          onPress={() => pickImage()}
+          style={defaultStyles.button}
+        />
+        <Button
+          title={"Take Photo"}
+          onPress={() => takeImage()}
+          style={defaultStyles.button}
+        />
+      </View>
     </View>
   );
 }
